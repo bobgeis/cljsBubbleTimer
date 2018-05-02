@@ -7,7 +7,7 @@
   "tau = two * pi"
   (* 2 Math/PI))
 
-(defn plog
+(defn clog
   "pprint arg to console transparently"
   [arg]
   (pprint arg)
