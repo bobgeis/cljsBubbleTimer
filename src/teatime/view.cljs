@@ -10,19 +10,20 @@
 
 (defn make-svg-circle
   "make a circle from a shape map"
-  [{:keys [x y r on t tM]}]
+  [{:keys [x y r on t tM] :as shape}]
+  ; (clog shape)
   [:circle {:cx x :cy y :r r :fill (if on "blue" "purple")}])
 
 (defn svg-board
   "draw the svgs"
   []
-  (let [shapes (<sub [:shapes])]
-    ; (into [:svg] make-svg-circle shapes)))
-    [:div "Hello!"]))
+  (let [shapes (<sub [:shapes])
+        circles (map make-svg-circle shapes)]
+    (into [:svg] circles)))
 
 (defn main-view
   []
-  (clog (svg-board)))
+  (svg-board))
 
 (defn render-root
   "render the root view"

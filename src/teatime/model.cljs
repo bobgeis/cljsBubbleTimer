@@ -8,7 +8,7 @@
 
 (defn example-shape-1
   []
-  {:x 5 :y 10 :r 20 :t 15 :tM 20 :on :true})
+  {:x 250 :y 400 :r 20 :t 15 :tM 20 :on :true})
 
 (defn init-model
   "return an initial model"

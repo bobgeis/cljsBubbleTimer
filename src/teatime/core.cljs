@@ -28,6 +28,6 @@
   (do
     (rf/dispatch-sync [:init])
     (view/render-root)
-    (raf main-loop)
-    (spy)))
+    (raf main-loop)))
+    ; (spy)))
 
