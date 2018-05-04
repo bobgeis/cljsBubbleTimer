@@ -16,3 +16,15 @@
   Note how empty m ensures that the product is the same type"
   [f m]
   (into (empty m) (for [[k v] m] [k (f v)])))
+
+(defn square
+  "square it"
+  [x]
+  (* x x))
+
+(defn distance
+  "get the distance between two point maps"
+  ([{x1 :x y1 :y} {x2 :x y2 :y}]
+   (distance x1 y1 x2 y2))
+  ([x1 y1 x2 y2]
+   (Math/hypot (- x2 x1) (- y2 y1))))

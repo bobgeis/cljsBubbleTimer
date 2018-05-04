@@ -26,6 +26,7 @@
 (defn add-top-listeners
   []
   (add-doc-listener "mousedown" #(disp-mouse-handler % :mouse-down))
-  ; (add-doc-listener "mousemove" #(disp-mouse-handler % :mouse-move))
+  (add-doc-listener "mousemove" #(disp-mouse-handler % :mouse-move))
+  (add-doc-listener "mouseout" #(disp-mouse-handler % :mouse-out))
   (add-doc-listener "mouseup" #(disp-mouse-handler % :mouse-up))
   (add-doc-listener "keyup" #(disp-key-handler % :key-up)))

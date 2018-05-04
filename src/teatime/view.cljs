@@ -3,6 +3,7 @@
   (:require
     [clojure.string :as str]
     [reagent.core :as r]
+    [teatime.model :as mod]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [>evt <sub]]))
 
@@ -18,8 +19,12 @@
   "draw the svgs"
   []
   (let [shapes (<sub [:shapes])
-        circles (map make-svg-circle shapes)]
-    (into [:svg] circles)))
+        circles (map make-svg-circle shapes)
+        mouse-circle (<sub [:mouse-circle])
+        mouse-circle-svg (make-svg-circle mouse-circle)]
+    (-> [:svg]
+      (into circles))))
+      ; (into [mouse-circle-svg]))))
 
 (defn main-view
   []
