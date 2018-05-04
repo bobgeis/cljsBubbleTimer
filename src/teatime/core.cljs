@@ -6,7 +6,8 @@
       [helper.log :refer [jlog clog]]
       [helper.rf :refer [spy]]
       [teatime.model :as mod]
-      [teatime.view :as view]))
+      [teatime.view :as view]
+      [teatime.input :as input]))
 
 (enable-console-print!)
 
@@ -28,6 +29,7 @@
   (do
     (rf/dispatch-sync [:init])
     (view/render-root)
+    (input/add-top-listeners)
     (raf main-loop)))
     ; (spy)))
 

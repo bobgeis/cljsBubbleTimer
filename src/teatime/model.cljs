@@ -10,12 +10,21 @@
   []
   {:x 250 :y 400 :r 20 :t 15 :tM 20 :on :true})
 
+(defn make-circle
+  "make a circle shape from a map"
+  [{:keys [x y r]}]
+  {:x x :y y :r 30 :on true :t 15 :tM 20})
+
 (defn init-model
   "return an initial model"
   []
   {:mode :run
    :shapes [(example-shape-1)]})
 
+(defn add-shape
+  "add a shape to the db"
+  [db shape]
+  (update db :shapes #(conj % shape)))
 
 
 
@@ -38,6 +47,25 @@
     ; (spy)
     db))
 
+
+(rf/reg-event-db :mouse-down
+  (fn [db v1]
+    ; (clog v1)
+    db))
+
+(rf/reg-event-db :mouse-move
+  (fn [db _]
+    db))
+
+(rf/reg-event-db :mouse-up
+  (fn [db [_ data]]
+    ; (clog data)
+    (add-shape db (make-circle data))))
+
+(rf/reg-event-db :key-up
+  (fn [db v1]
+    ; (clog v1)
+    db))
 
 
 ;; reg sub
