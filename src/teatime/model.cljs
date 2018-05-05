@@ -110,6 +110,6 @@
 
 (rf/reg-sub :mouse-circle
   (fn [db _]
-    (let [start (get-in db [:mouse :start])
-          stop (get-in db [:mouse :stop])]
-      (make-circle-from-points start stop))))
+    (if-let [stop (get-in db [:mouse :stop])]
+      (make-circle-from-points (get-in db [:mouse :start]) stop)
+      nil)))

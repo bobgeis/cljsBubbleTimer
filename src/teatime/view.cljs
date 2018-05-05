@@ -12,11 +12,11 @@
 
 (defn make-svg-circle
   "make a circle from a shape map"
-  [{:keys [x y r state t tM] :as shape}]
+  [{:keys [x y r state t tM]}]
   ; (clog shape)
   [:circle
     {:cx x :cy y :r r
-     :fill (if (= state :on) "rgba(0, 0, 255, 0.5)" "purple")}])
+     :fill (if (= state :on) "rgba(0, 0, 255, 0.5)" "rgba(150, 0 200, 0.5")}])
 
 (defn make-svg-circles
   "make the circle timers"
@@ -24,15 +24,22 @@
   (let [shapes (<sub [:shapes])]
      (into [:g] (map make-svg-circle) shapes)))
 
+(defn mouse-circle
+  "draw the mouse circle if there is one"
+  []
+  (if-let [circle (<sub [:mouse-circle])]
+    [:g [:circle {:cx (:x circle) :cy (:y circle) :r (:r circle) :fill "purple"}]]
+    [:g]))
+
 (defn svg-board
   "draw the svgs"
   []
   [:svg
-    (make-svg-circles)])
-  ; (-> [:svg]
-  ;   (into (make-svg-circles))))
+    (make-svg-circles)
+    (mouse-circle)])
 
 (defn main-view
+  "the main view"
   []
   (svg-board))
 
