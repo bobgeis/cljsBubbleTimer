@@ -89,7 +89,7 @@
   (fn [db [_ data]]
     (move-mouse db data)))
 
-(rf/reg-event-db :mouse-out
+(rf/reg-event-db :mouse-leave
   (fn [db _]
     (clear-mouse db)))
 

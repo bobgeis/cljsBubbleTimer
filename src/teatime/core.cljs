@@ -2,9 +2,9 @@
     (:require
       [reagent.core :as reagent :refer [atom]]
       [re-frame.core :as rf]
-      [helper.fun :refer [raf]]
       [helper.log :refer [jlog clog]]
       [helper.rf :refer [spy]]
+      [helper.browser :refer [raf]]
       [teatime.model :as mod]
       [teatime.view :as view]
       [teatime.input :as input]))

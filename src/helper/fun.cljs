@@ -2,10 +2,6 @@
   "helper functions")
 
 
-(def raf
-  "request animation frame"
-  js/requestAnimationFrame)
-
 (def tau
   "tau is two pi"
   (* 2 Math/PI))
