@@ -9,19 +9,20 @@
 
 (defn example-shape-1
   []
-  {:x 250 :y 400 :r 20 :t 15 :tM 20 :on :true})
+  {:x 250 :y 400 :r 20 :t 15 :tM 20 :state :on})
 
 (defn make-circle
   "make a circle shape from a map"
   [{:keys [x y r]}]
-  {:x x :y y :r r :on true :t 15 :tM 20})
+  {:x x :y y :r r :state :on :t 15 :tM 20})
 
 (defn make-circle-from-points
   "make circle from two points,
   first arg will be the center,
   the second arg will be on the edge"
   [{x1 :x y1 :y} {x2 :x y2 :y}]
-  (let [r (distance x1 y1 x2 y2)]
+  (let [r (distance x1 y1 x2 y2)
+        test (clog [x1 y1 x2 y2])]
     (make-circle {:x x1 :y y1 :r r})))
 
 (defn init-model
@@ -41,7 +42,7 @@
   [db]
   (assoc db :mouse nil))
 
-(defn add-mouse
+(defn start-mouse
   "assoc mouse pos data"
   [db {:keys [x y]}]
   (assoc db :mouse {:start {:x x :y y}}))
@@ -52,6 +53,15 @@
   (if-not (:mouse db)
     db
     (assoc-in db [:mouse :stop] {:x x :y y})))
+
+(defn stop-mouse
+  "handle mouse up"
+  [db stop]
+  (if-let [start (get-in db [:mouse :start])]
+    (-> db
+      clear-mouse
+      (add-shape (make-circle-from-points start stop)))
+    db))
 
     ;; reg cofx
 
@@ -73,7 +83,7 @@
 
 (rf/reg-event-db :mouse-down
   (fn [db [_ data]]
-    (add-mouse db data)))
+    (start-mouse db data)))
 
 (rf/reg-event-db :mouse-move
   (fn [db [_ data]]
@@ -85,10 +95,7 @@
 
 (rf/reg-event-db :mouse-up
   (fn [db [_ data]]
-    (-> db
-    ;  clog
-     clear-mouse
-     (add-shape (make-circle-from-points (get-in db [:mouse :start]) data)))))
+    (stop-mouse db data)))
 
 (rf/reg-event-db :key-up
   (fn [db v1]

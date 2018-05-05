@@ -11,20 +11,28 @@
 
 (defn make-svg-circle
   "make a circle from a shape map"
-  [{:keys [x y r on t tM] :as shape}]
+  [{:keys [x y r state t tM] :as shape}]
   ; (clog shape)
-  [:circle {:cx x :cy y :r r :fill (if on "blue" "purple")}])
+  [:circle {:cx x :cy y :r r :fill (if (= state :on) "blue" "purple")}])
+
+(defn make-svg-circles
+  "make the circle timers"
+  []
+  (let [shapes (<sub [:shapes])
+        circles (map make-svg-circle shapes)]
+     [circles]))
+
+(defn maybe-active-circle
+  "return a group that might contain an active circle"
+  []
+  (let [mouse-circle (<sub [:mouse-circle])]
+    [:g]))
 
 (defn svg-board
   "draw the svgs"
   []
-  (let [shapes (<sub [:shapes])
-        circles (map make-svg-circle shapes)
-        mouse-circle (<sub [:mouse-circle])
-        mouse-circle-svg (make-svg-circle mouse-circle)]
-    (-> [:svg]
-      (into circles))))
-      ; (into [mouse-circle-svg]))))
+  (-> [:svg]
+    (into (make-svg-circles))))
 
 (defn main-view
   []
