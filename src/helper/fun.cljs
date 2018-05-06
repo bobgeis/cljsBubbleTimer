@@ -51,11 +51,38 @@
 
 ;; trigonometry functions
 
+;; angle conversions
 (defn radians
-  "convert a fraction of a circle to radian angle"
-  [ratio]
-  (* tau ratio))
+  "convert circles to radians"
+  [a]
+  (* tau a))
 
+(defn unrad
+  "convert radians to circles"
+  [a]
+  (/ a tau))
+
+(defn degrees
+  "convert circles to degrees"
+  [a]
+  (* 360 a))
+
+(defn undegree
+  "convert degrees to circles"
+  [a]
+  (/ a 360))
+
+(defn deg-to-rad
+  "convert degrees to radians"
+  [a]
+  (radians (undegree a)))
+
+(defn rad-to-deg
+  "convert radians to degrees"
+  [a]
+  (degrees (unrad a)))
+
+;; magnitude (mag) and get angle (gang) of [x y] vectors
 (defn mag
   "get the magnitude of a vector [x y]"
   [x y]
@@ -66,6 +93,7 @@
   [x y]
   (Math/atan2 y x))
 
+;; cartesian to polar conversion
 (defn ra-to-xy
   "convert polar coordinates to cartesian"
   [r a]
@@ -76,14 +104,15 @@
   [x y]
   [(mag x y) (gang x y)])
 
+;; translation
 (defn trans-xy
-  "translate an xy point by dx dy"
+  "translate an xy point by dx dy yielding [x' y']"
   [x y dx dy]
   [(+ x dx) (+ y dy)])
 
 (defn trans-ra
-  "translate a point (x y) by a distance (r) in a direction (a radians)
-    yielding a new point [x' y']"
+  "translate an xy point by a distance (r) in a direction (a radians)
+    yielding [x' y']"
   [x y r a]
   (let [[dx dy] (ra-to-xy r a)]
     (trans-xy x y dx dy)))

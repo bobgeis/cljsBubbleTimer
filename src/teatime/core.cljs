@@ -4,7 +4,7 @@
       [re-frame.core :as rf]
       [helper.log :refer [jlog clog]]
       [helper.rf :refer [spy]]
-      [helper.browser :refer [raf]]
+      [helper.browser :refer [raf-dt]]
       [teatime.model :as mod]
       [teatime.view :as view]
       [teatime.input :as input]))
@@ -21,15 +21,15 @@
     1: dispatch :tick
     2: call raf
     3: profit"
-  []
-  (rf/dispatch [:tick])
-  (raf main-loop))
+  [dt]
+  ; (clog dt)
+  (rf/dispatch [:tick dt]))
 
 (defonce begin!
   (do
     (rf/dispatch-sync [:init])
     (view/render-root)
     (input/add-top-listeners)
-    (raf main-loop)))
+    (raf-dt main-loop)))
     ; (spy)))
 
