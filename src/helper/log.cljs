@@ -3,9 +3,6 @@
   (:require
     [cljs.pprint :as pp :refer [pprint]]))
 
-(def tau
-  "tau = two * pi"
-  (* 2 Math/PI))
 
 (defn clog
   "pprint arg to console transparently"
