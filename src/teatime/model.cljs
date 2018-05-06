@@ -7,6 +7,11 @@
     [helper.rf :refer [spy]]))
 
 
+(defn dist-to-time
+  "convert distance (px) to time (ms)"
+  [r]
+  (* 1000 r))
+
 (defn example-shape-1
   []
   {:x 250 :y 400 :r 20 :t 15 :tM 20 :state :on})
@@ -14,7 +19,8 @@
 (defn make-circle
   "make a circle shape from a map"
   [{:keys [x y r]}]
-  {:x x :y y :r r :state :on :t (* r 10)  :tM (* r 10)})
+  (let [t (dist-to-time r)]
+    {:x x :y y :r r :state :on :t t  :tM t}))
 
 (defn make-circle-from-points
   "make circle from two points,
@@ -39,23 +45,23 @@
 
 (defn filter-tick-shape
   "tick one shape, return nil if it should be removed"
-  [shape]
-  (let [t (:t shape)]
+  [shape dt]
+  (let [t (- (:t shape) dt)]
    (if (< t 0)
      nil
-     (assoc shape :t (dec t)))))
+     (assoc shape :t  t))))
 
 (defn filter-tick-shapes
   "tick & filter a vector of shapes"
-  [shapes]
+  [shapes dt]
   (->> shapes
-    (map filter-tick-shape)
+    (map #(filter-tick-shape % dt))
     (filter identity)))
 
 (defn tick-shapes
   "progress all the shapes"
-  [db]
-  (update db :shapes filter-tick-shapes))
+  [db dt]
+  (update db :shapes filter-tick-shapes dt))
 
 (defn clear-mouse
   "clear the mouse map from db"
@@ -96,9 +102,9 @@
     (merge db (init-model))))
 
 (rf/reg-event-db :tick
-  (fn [db _]
+  (fn [db [_ dt]]
     ; (spy)
-    (tick-shapes db)))
+    (tick-shapes db dt)))
 
 
 (rf/reg-event-db :mouse-down
