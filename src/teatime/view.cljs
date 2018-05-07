@@ -8,11 +8,14 @@
     [helper.fun :refer [trans-ra radians half-pi pi tau]]
     [helper.browser :refer [get-app-element]]))
 
+(defn radius-to-min-sec
+  "turn a radius (px) into mm:ss"
+  [r]
+  (str (Math/floor (/ r 60)) ":" (.slice (str "0" (Math/floor (mod r 60))) -2)))
 
 (defn make-svg-circle
   "make a circle from a shape map"
   [{:keys [x y r state t tM]}]
-  ; (clog shape)
   [:circle
     {:cx x :cy y :r r
      :fill (if (= state :on) "rgba(0, 0, 255, 0.5)" "rgba(150, 0 200, 0.5")}])
@@ -41,7 +44,11 @@
   "draw the mouse circle if there is one"
   []
   (if-let [circle (<sub [:mouse-circle])]
-    [:g [:circle {:cx (:x circle) :cy (:y circle) :r (:r circle) :fill "cyan"}]]
+    [:g
+      [:circle {:cx (:x circle) :cy (:y circle) :r (:r circle) :fill "#00BBAA"}]
+      [:text {:x (:x circle) :y (:y circle)
+              :font-size 30 :font-family "Arial"}
+        (radius-to-min-sec (:r circle))]]
     [:g]))
 
 (defn svg-board

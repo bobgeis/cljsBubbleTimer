@@ -7,8 +7,8 @@
     [helper.rf :refer [spy]]))
 
 
-(defn dist-to-time
-  "convert distance (px) to time (ms)"
+(defn radius-to-time
+  "convert radius (px) to time (ms)"
   [r]
   (* 1000 r))
 
@@ -19,8 +19,8 @@
 (defn make-circle
   "make a circle shape from a map"
   [{:keys [x y r]}]
-  (let [t (dist-to-time r)]
-    {:x x :y y :r r :state :on :t t  :tM t}))
+  (let [t (radius-to-time r)]
+    {:x x :y y :r r :state :on :t t :tM t}))
 
 (defn make-circle-from-points
   "make circle from two points,
@@ -89,7 +89,8 @@
       (add-shape (make-circle-from-points start stop)))
     db))
 
-    ;; reg cofx
+
+;; reg cofx
 
 
 ;; reg fx
@@ -106,7 +107,7 @@
     ; (spy)
     (tick-shapes db dt)))
 
-
+;; reg mouse events
 (rf/reg-event-db :mouse-down
   (fn [db [_ data]]
     (start-mouse db data)))
