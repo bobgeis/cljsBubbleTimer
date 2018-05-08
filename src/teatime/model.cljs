@@ -6,6 +6,9 @@
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
 
+(def min-radius
+  "circles smaller than this (px) will not be created"
+  5)
 
 (defn radius-to-time
   "convert radius (px) to time (ms)"
@@ -80,14 +83,21 @@
     db
     (assoc-in db [:mouse :stop] {:x x :y y})))
 
+(defn create-new-shape
+  "add a new shape to the db"
+  [db stop start]
+  (-> db
+    clear-mouse
+    (add-shape (make-circle-from-points start stop))))
+
 (defn stop-mouse
   "handle mouse up"
   [db stop]
-  (if-let [start (get-in db [:mouse :start])]
-    (-> db
-      clear-mouse
-      (add-shape (make-circle-from-points start stop)))
-    db))
+  (let [start (get-in db [:mouse :start])
+        r (distance stop start)]
+    (if (> r min-radius)
+      (create-new-shape db stop start)
+      (clear-mouse db))))
 
 
 ;; reg cofx

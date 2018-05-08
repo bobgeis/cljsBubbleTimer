@@ -14,7 +14,7 @@
 
 (defn disp-key-handler
   [e kw]
-  ; (jlog e)
+  (jlog e)
   (rf/dispatch [kw {:key (.-key e)}]))
 
 (defn add-listener

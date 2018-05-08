@@ -43,13 +43,15 @@
 (defn mouse-circle
   "draw the mouse circle if there is one"
   []
-  (if-let [circle (<sub [:mouse-circle])]
-    [:g
-      [:circle {:cx (:x circle) :cy (:y circle) :r (:r circle) :fill "#00BBAA"}]
-      [:text {:x (:x circle) :y (:y circle)
-              :font-size 30 :font-family "Arial"}
-        (radius-to-min-sec (:r circle))]]
-    [:g]))
+  (let [{:keys [x y r]} (<sub [:mouse-circle])]
+    (if (> r mod/min-radius)
+      [:g
+        [:circle {:cx x :cy y :r r
+                  :fill "rgba(0, 150, 200, 0.8)"}]
+        [:text {:x x :y y
+                :font-size 30 :font-family "Arial"}
+          (radius-to-min-sec r)]]
+      [:g])))
 
 (defn svg-board
   "draw the svgs"
