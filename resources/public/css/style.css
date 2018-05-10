@@ -14,6 +14,6 @@ svg {
   height: 100%;
 }
 
-svg text {
+svg path, circle, text {
   user-select: none;
 }

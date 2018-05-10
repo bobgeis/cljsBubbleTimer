@@ -9,7 +9,9 @@
 (defn spy
   "pprint app db"
   []
-  (pprint @rfdb/app-db))
+  (-> @rfdb/app-db
+    pprint
+    identity))
 
 (defn <sub
   "another way to subscribe, for use in views

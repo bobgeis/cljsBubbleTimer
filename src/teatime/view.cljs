@@ -21,7 +21,7 @@
      :fill (if (= state :on) "rgba(0, 0, 255, 0.5)" "rgba(150, 0 200, 0.5")}])
 
 (defn make-svg-arc
-  "draw a shape with svg"
+  "draw an arc with svg"
   [{:keys [x y r state t tM]}]
   (let [a (radians (/ t tM))
         [x2 y2] (trans-ra x y r (- (+ a half-pi)))
@@ -34,11 +34,20 @@
             "Z")
        :fill "rgba(0, 0, 255, 0.5)"}]))
 
+(defn make-svg-shape
+  "draw a shape with svg"
+  [{:keys [t tM] :as shape}]
+  (let [ratio (/ t tM)]
+    (cond
+      (>= ratio 1) (make-svg-circle shape)
+      (> ratio 0) (make-svg-arc shape)
+      :else nil)))
+
 (defn make-svg-circles
   "make the circle timers"
   []
   (let [shapes (<sub [:shapes])]
-     (into [:g] (map make-svg-arc) shapes)))
+     (into [:g] (map make-svg-shape) shapes)))
 
 (defn mouse-circle
   "draw the mouse circle if there is one"

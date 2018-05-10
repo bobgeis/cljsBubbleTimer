@@ -90,6 +90,17 @@
     clear-mouse
     (add-shape (make-circle-from-points start stop))))
 
+(defn toggle-shape-state
+  "toggle the :state of a shape :on/:off"
+  [shape]
+  (assoc shape :state (if (= :on (:state shape)) :off :on)))
+
+(defn maybe-click-circle
+  "pause a circle under the upclick"
+  ;; ? (first (filter (dist-check shapes stop)))
+  [db {:keys [x y shift ctrl] :as stop}]
+  (clear-mouse db))
+
 (defn stop-mouse
   "handle mouse up"
   [db stop]
@@ -97,7 +108,7 @@
         r (distance stop start)]
     (if (> r min-radius)
       (create-new-shape db stop start)
-      (clear-mouse db))))
+      (maybe-click-circle db stop))))
 
 
 ;; reg cofx
