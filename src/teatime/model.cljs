@@ -3,7 +3,7 @@
   (:require
     [re-frame.core :as rf]
     [com.rpl.specter :as sp]
-    [helper.browser :refer [set-local-storage get-local-storage]]
+    [helper.browser :refer [set-local-storage get-local-storage del-local-storage]]
     [helper.fun :refer [distance within?]]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
@@ -131,10 +131,16 @@
   [cofx data]
   {:set-local-store [(get-in cofx [:db :shapes]) "teatime"]})
 
+(defn clear-store
+  "remove anything stored in local storage for this app"
+  [cofx data]
+  (del-local-storage "teatime"))
+
 (def keyup->axn
   "map of keyups to action functions"
   {" " toggle-mode
-   "Enter" store-state})
+   "Enter" store-state
+   "Escape" clear-store})
 
 ;; reg cofx
 
@@ -181,6 +187,7 @@
 
 (rf/reg-event-fx :key-up
   (fn [cofx [_ data]]
+    ; (clog data)
     ((get keyup->axn (:key data) no-axn) cofx data)))
 
 ;; reg sub
