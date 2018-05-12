@@ -118,7 +118,7 @@
   ([x1 y1 x2 y2]
    (Math/hypot (- x2 x1) (- y2 y1))))
 
-(defn within
+(defn within?
   "are two points within r of each other"
   [p1 p2 r]
   (> r (distance p1 p2)))

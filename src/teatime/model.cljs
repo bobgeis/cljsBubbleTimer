@@ -2,7 +2,8 @@
   "ns for the db and manipulation fns"
   (:require
     [re-frame.core :as rf]
-    [helper.fun :refer [distance]]
+    [com.rpl.specter :as sp]
+    [helper.fun :refer [distance within?]]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
 
@@ -49,10 +50,11 @@
 (defn filter-tick-shape
   "tick one shape, return nil if it should be removed"
   [shape dt]
-  (let [t (- (:t shape) dt)]
-   (if (< t 0)
-     nil
-     (assoc shape :t  t))))
+  (if (= :off (:state shape)) shape
+    (let [t (- (:t shape) dt)]
+     (if (< t 0)
+       nil
+       (assoc shape :t  t)))))
 
 (defn filter-tick-shapes
   "tick & filter a vector of shapes"
@@ -95,11 +97,17 @@
   [shape]
   (assoc shape :state (if (= :on (:state shape)) :off :on)))
 
+(defn within-shape?
+  "is this point within the shape?"
+  [{r :r :as shape} point]
+  (within? shape point r))
+
 (defn maybe-click-circle
   "pause a circle under the upclick"
-  ;; ? (first (filter (dist-check shapes stop)))
   [db {:keys [x y shift ctrl] :as stop}]
-  (clear-mouse db))
+  (sp/transform [:shapes (sp/filterer #(within-shape? % stop)) sp/FIRST]
+    toggle-shape-state
+    (clear-mouse db)))
 
 (defn stop-mouse
   "handle mouse up"
@@ -154,7 +162,7 @@
 ;; reg sub
 
 (rf/reg-sub :shapes
-  (fn [db _] (:shapes db)))
+  (fn [db _] (reverse (:shapes db))))
 
 (rf/reg-sub :mouse-circle
   (fn [db _]

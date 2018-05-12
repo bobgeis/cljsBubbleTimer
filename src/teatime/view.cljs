@@ -18,7 +18,8 @@
   [{:keys [x y r state t tM]}]
   [:circle
     {:cx x :cy y :r r
-     :fill (if (= state :on) "rgba(0, 0, 255, 0.5)" "rgba(150, 0 200, 0.5")}])
+     :fill (if (= state :on) "rgba(0, 0, 255, 0.5)"
+              "rgba(150, 0 200, 0.5)")}])
 
 (defn make-svg-arc
   "draw an arc with svg"
@@ -32,7 +33,8 @@
             "v" (- r)
             "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2
             "Z")
-       :fill "rgba(0, 0, 255, 0.5)"}]))
+       :fill (if (= state :on) "rgba(0, 0, 255, 0.5)"
+                "rgba(150, 0, 200, 0.5)")}]))
 
 (defn make-svg-shape
   "draw a shape with svg"
