@@ -8,13 +8,10 @@
 
 (defn disp-mouse-handler
   [e kw]
-  ; (clog [kw e.x e.y])
-  ; (jlog e)
   (rf/dispatch [kw {:x e.x :y e.y :shift e.shiftKey :alt e.altKey}]))
 
 (defn disp-key-handler
   [e kw]
-  ; (jlog e)
   (rf/dispatch [kw {:key e.key :shift e.shiftKey :alt e.altKey}]))
 
 (defn add-listener

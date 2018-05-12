@@ -156,12 +156,10 @@
 (rf/reg-event-fx :init
   [(rf/inject-cofx :get-local-store "teatime")]
   (fn [cofx _]
-    (clog cofx)
     {:db (assoc (init-model) :shapes (:get-local-store cofx))}))
 
 (rf/reg-event-db :tick
   (fn [db [_ dt]]
-    ; (spy)
     (tick-shapes db dt)))
 
 ;; reg mouse events
