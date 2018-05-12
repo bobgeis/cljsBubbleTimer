@@ -102,11 +102,11 @@
   [{r :r :as shape} point]
   (within? shape point r))
 
-(defn maybe-click-circle
-  "pause a circle under the upclick"
+(defn maybe-click-shape
+  "pause or kill a circle under the upclick"
   [db {:keys [x y shift ctrl] :as stop}]
   (sp/transform [:shapes (sp/filterer #(within-shape? % stop)) sp/FIRST]
-    toggle-shape-state
+    (if shift sp/NONE toggle-shape-state)
     (clear-mouse db)))
 
 (defn stop-mouse
@@ -114,9 +114,9 @@
   [db stop]
   (let [start (get-in db [:mouse :start])
         r (distance stop start)]
-    (if (> r min-radius)
-      (create-new-shape db stop start)
-      (maybe-click-circle db stop))))
+    (cond
+      (> r min-radius) (create-new-shape db stop start)
+      :else (maybe-click-shape db stop))))
 
 
 ;; reg cofx

@@ -10,7 +10,7 @@
   [e kw]
   ; (clog [kw e.x e.y])
   ; (jlog e)
-  (rf/dispatch [kw {:x e.x :y e.y :shift e.shift}]))
+  (rf/dispatch [kw {:x e.x :y e.y :shift e.shiftKey}]))
 
 (defn disp-key-handler
   [e kw]
