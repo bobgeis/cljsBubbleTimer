@@ -64,12 +64,24 @@
           (radius-to-min-sec r)]]
       [:g])))
 
+(defn get-bg-color
+  "get the background color of the main svg"
+  [mode num]
+  (cond
+    (= mode :pause) "#888855"
+    (= num 0) "555555"
+    ;; (= red num) "#885555" ;; if all shapes are red, show the red bg
+    :else "#DFDFD0"))
+
 (defn svg-board
   "draw the svgs"
   []
-  [:svg
-    (make-svg-circles)
-    (mouse-circle)])
+  (let [mode (<sub [:mode])
+        num (<sub [:shape-count])]
+    [:svg
+      {:style {:background-color (get-bg-color mode num)}}
+      (make-svg-circles)
+      (mouse-circle)]))
 
 (defn main-view
   "the main view"

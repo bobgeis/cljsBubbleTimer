@@ -16,10 +16,6 @@
   [r]
   (* 1000 r))
 
-(defn example-shape-1
-  []
-  {:x 250 :y 400 :r 20 :t 15 :tM 20 :state :on})
-
 (defn make-circle
   "make a circle shape from a map"
   [{:keys [x y r]}]
@@ -38,7 +34,6 @@
   "return an initial model"
   []
   {:mode :run
-  ;  :shapes [(example-shape-1)]
    :shapes []
    :mouse nil})
 
@@ -66,7 +61,9 @@
 (defn tick-shapes
   "progress all the shapes"
   [db dt]
-  (update db :shapes filter-tick-shapes dt))
+  (if (= :run (:mode db))
+    (update db :shapes filter-tick-shapes dt)
+    db))
 
 (defn clear-mouse
   "clear the mouse map from db"
@@ -118,6 +115,14 @@
       (> r min-radius) (create-new-shape db stop start)
       :else (maybe-click-shape db stop))))
 
+(defn toggle-mode
+  "toggle the mode :run <-> :pause"
+  [db data]
+  (assoc db :mode (if (= :run (:mode db)) :pause :run)))
+
+(def keyup->axn
+  "map of keyups to action functions"
+  {" " toggle-mode})
 
 ;; reg cofx
 
@@ -154,10 +159,9 @@
     (stop-mouse db data)))
 
 (rf/reg-event-db :key-up
-  (fn [db v1]
-    ; (clog v1)
-    db))
-
+  (fn [db [_ data]]
+    (clog data)
+    ((get keyup->axn (:key data) identity) db data)))
 
 ;; reg sub
 
@@ -169,3 +173,9 @@
     (if-let [stop (get-in db [:mouse :stop])]
       (make-circle-from-points (get-in db [:mouse :start]) stop)
       nil)))
+
+(rf/reg-sub :mode
+  (fn [db _] (:mode db)))
+
+(rf/reg-sub :shape-count
+  (fn [db _] (count (:shapes db))))

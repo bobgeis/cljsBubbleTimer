@@ -10,12 +10,12 @@
   [e kw]
   ; (clog [kw e.x e.y])
   ; (jlog e)
-  (rf/dispatch [kw {:x e.x :y e.y :shift e.shiftKey}]))
+  (rf/dispatch [kw {:x e.x :y e.y :shift e.shiftKey :alt e.altKey}]))
 
 (defn disp-key-handler
   [e kw]
-  (jlog e)
-  (rf/dispatch [kw {:key (.-key e)}]))
+  ; (jlog e)
+  (rf/dispatch [kw {:key e.key :shift e.shiftKey :alt e.altKey}]))
 
 (defn add-listener
   [ele event handler]
@@ -28,4 +28,4 @@
     (add-listener div "mousemove" #(disp-mouse-handler % :mouse-move))
     (add-listener div "mouseleave" #(disp-mouse-handler % :mouse-leave))
     (add-listener div "mouseup" #(disp-mouse-handler % :mouse-up))
-    (add-listener div "keyup" #(disp-key-handler % :key-up))))
+    (add-listener js/document "keyup" #(disp-key-handler % :key-up))))
