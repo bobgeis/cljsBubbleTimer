@@ -3,6 +3,7 @@
   (:require
     [re-frame.core :as rf]
     [com.rpl.specter :as sp]
+    [helper.browser :refer [set-local-storage get-local-storage]]
     [helper.fun :refer [distance within?]]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
@@ -20,7 +21,7 @@
   "make a circle shape from a map"
   [{:keys [x y r]}]
   (let [t (radius-to-time r)]
-    {:x x :y y :r r :state :on :t t :tM t}))
+    {:x x :y y :r r :state "on" :t t :tM t}))
 
 (defn make-circle-from-points
   "make circle from two points,
@@ -45,7 +46,7 @@
 (defn filter-tick-shape
   "tick one shape, return nil if it should be removed"
   [shape dt]
-  (if (= :off (:state shape)) shape
+  (if (= "off" (:state shape)) shape
     (let [t (- (:t shape) dt)]
      (if (< t 0)
        nil
@@ -92,7 +93,7 @@
 (defn toggle-shape-state
   "toggle the :state of a shape :on/:off"
   [shape]
-  (assoc shape :state (if (= :on (:state shape)) :off :on)))
+  (assoc shape :state (if (= "on" (:state shape)) "off" "on")))
 
 (defn within-shape?
   "is this point within the shape?"
@@ -115,26 +116,48 @@
       (> r min-radius) (create-new-shape db stop start)
       :else (maybe-click-shape db stop))))
 
+(defn no-axn
+  "no-op action"
+  [cofx data]
+  {:db (:db cofx)})
+
 (defn toggle-mode
   "toggle the mode :run <-> :pause"
-  [db data]
-  (assoc db :mode (if (= :run (:mode db)) :pause :run)))
+  [cofx data]
+  {:db (assoc (:db cofx) :mode (if (= :run (:mode (:db cofx))) :pause :run))})
+
+(defn store-state
+  "store the current db in local storage"
+  [cofx data]
+  {:set-local-store [(get-in cofx [:db :shapes]) "teatime"]})
 
 (def keyup->axn
   "map of keyups to action functions"
-  {" " toggle-mode})
+  {" " toggle-mode
+   "Enter" store-state})
 
 ;; reg cofx
 
+(rf/reg-cofx :get-local-store
+  (fn [cofx ls-key]
+    (assoc cofx :get-local-store
+      (get-local-storage ls-key []))))
 
 ;; reg fx
+
+(rf/reg-fx :set-local-store
+  (fn [[data ls-key]]
+    (set-local-storage ls-key data)))
+
 
 
 ;; reg event
 
-(rf/reg-event-db :init
-  (fn [db _]
-    (merge db (init-model))))
+(rf/reg-event-fx :init
+  [(rf/inject-cofx :get-local-store "teatime")]
+  (fn [cofx _]
+    (clog cofx)
+    {:db (assoc (init-model) :shapes (:get-local-store cofx))}))
 
 (rf/reg-event-db :tick
   (fn [db [_ dt]]
@@ -158,10 +181,9 @@
   (fn [db [_ data]]
     (stop-mouse db data)))
 
-(rf/reg-event-db :key-up
-  (fn [db [_ data]]
-    (clog data)
-    ((get keyup->axn (:key data) identity) db data)))
+(rf/reg-event-fx :key-up
+  (fn [cofx [_ data]]
+    ((get keyup->axn (:key data) no-axn) cofx data)))
 
 ;; reg sub
 

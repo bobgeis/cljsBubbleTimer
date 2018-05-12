@@ -3,10 +3,15 @@
   (:require
     [helper.log :refer [clog]]))
 
+
+
 (defn get-app-element
   "get the app element"
   []
   (js/document.getElementById "app"))
+
+
+;; request animation frame
 
 (def raf
   "request animation frame
@@ -48,3 +53,23 @@
   []
   (let [id @raf-token]
     (js/cancelAnimationFrame id)))
+
+
+;; local storage
+
+(defn set-local-storage
+  "set something in the local storage"
+  [name value]
+  (.setItem js/localStorage name (.stringify js/JSON (clj->js value))))
+
+(defn get-local-storage
+  "get something from local storage"
+  ([name]
+   (js->clj (.parse js/JSON (.getItem js/localStorage name)) :keywordize-keys true))
+  ([name default]
+   (or (get-local-storage name) default)))
+
+(defn del-local-storage
+  "remove something from local storage"
+  [name]
+  (.removeItem js/localStorage name))
