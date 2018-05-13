@@ -17,12 +17,8 @@
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
 
 (defn main-loop
-  "the main loop:
-    1: dispatch :tick
-    2: call raf
-    3: profit"
+  "dispatch tick every animation frame"
   [dt]
-  ; (clog dt)
   (rf/dispatch [:tick dt]))
 
 (defonce begin!

@@ -13,13 +13,31 @@
   [r]
   (str (Math/floor (/ r 60)) ":" (.slice (str "0" (Math/floor (mod r 60))) -2)))
 
-(defn make-svg-outline
-  "make the outline circle"
+
+(defn make-svg-outline-arc
+  "make an outline arc"
+  [{:keys [x y r state t tM]}]
+  [:path])
+    ;; todo
+            ; "M " x ", " y
+            ; "v" (- r)
+            ; "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2])
+
+(defn make-svg-outline-circle
+  "make an outline circle"
   [{:keys [x y r state t tM]}]
   [:circle
     {:cx x :cy y :r r
      :fill "transparent"
      :stroke "black" :stroke-width 1}])
+
+(defn make-svg-outline
+  "make the outline circle or arc"
+  [{:keys [t tM] :as shape}]
+  (let [ratio (/ t tM)]
+    (cond
+      (> ratio 0) (make-svg-outline-circle shape)
+      :else nil)))
 
 (defn make-svg-fill-circle
   "make a circle from a shape map"
