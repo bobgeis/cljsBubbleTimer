@@ -13,15 +13,22 @@
   [r]
   (str (Math/floor (/ r 60)) ":" (.slice (str "0" (Math/floor (mod r 60))) -2)))
 
-(defn make-svg-circle
+(defn make-svg-outline
+  "make the outline circle"
+  [{:keys [x y r state t tM]}]
+  [:circle
+    {:cx x :cy y :r r
+     :fill "transparent"
+     :stroke "black" :stroke-width 1}])
+
+(defn make-svg-fill-circle
   "make a circle from a shape map"
   [{:keys [x y r state t tM]}]
   [:circle
     {:cx x :cy y :r r
-     :fill (if (= state "on") "rgba(0, 0, 255, 0.5)"
-              "rgba(150, 0, 200, 0.5)")}])
+      :fill (if (= state "on") "url(#on)" "url(#off)")}])
 
-(defn make-svg-arc
+(defn make-svg-fill-arc
   "draw an arc with svg"
   [{:keys [x y r state t tM]}]
   (let [a (radians (/ t tM))
@@ -33,19 +40,23 @@
             "v" (- r)
             "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2
             "Z")
-       :fill (if (= state "on") "rgba(0, 0, 255, 0.5)"
-                "rgba(150, 0, 200, 0.5)")}]))
+        :fill (if (= state "on") "url(#on)" "url(#off)")}]))
 
-(defn make-svg-shape
+(defn make-svg-fill
   "draw a shape with svg"
   [{:keys [t tM] :as shape}]
   (let [ratio (/ t tM)]
     (cond
-      (>= ratio 1) (make-svg-circle shape)
-      (> ratio 0) (make-svg-arc shape)
+      (>= ratio 1) (make-svg-fill-circle shape)
+      (> ratio 0) (make-svg-fill-arc shape)
       :else nil)))
 
-(defn make-svg-circles
+(defn make-svg-shape
+  [shape]
+  [:g (make-svg-fill shape)
+      (make-svg-outline shape)])
+
+(defn make-svg-shapes
   "make the circle timers"
   []
   (let [shapes (<sub [:shapes])]
@@ -73,6 +84,17 @@
     ;; (= red num) "#885555" ;; if all shapes are red, show the red bg
     :else "#DFDFD0"))
 
+(defn svg-grad-def
+  "get defs for the svg radial gradient"
+  []
+  [:defs
+    [:radialGradient {:id "on"}
+      [:stop {:offset "10%" :stop-color "rgba(255, 255, 255, 0.5)"}]
+      [:stop {:offset "95%" :stop-color "rgba(0, 100, 200, 0.5)"}]]
+    [:radialGradient {:id "off"}
+      [:stop {:offset "10%" :stop-color "rgba(255, 255, 255, 0.5)"}]
+      [:stop {:offset "95%" :stop-color "rgba(100, 0, 200, 0.5)"}]]])
+
 (defn svg-board
   "draw the svgs"
   []
@@ -80,7 +102,8 @@
         num (<sub [:shape-count])]
     [:svg
       {:style {:background-color (get-bg-color mode num)}}
-      (make-svg-circles)
+      (svg-grad-def)
+      (make-svg-shapes)
       (mouse-circle)]))
 
 (defn main-view
