@@ -4,11 +4,16 @@
     [helper.log :refer [clog]]))
 
 
+(defn get-element
+  "get an element by id"
+  [id]
+  (js/document.getElementById id))
 
 (defn get-app-element
-  "get the app element"
+  "get the app element
+  (default root node for figwheel etc"
   []
-  (js/document.getElementById "app"))
+  (get-element "app"))
 
 
 ;; request animation frame
@@ -73,3 +78,11 @@
   "remove something from local storage"
   [name]
   (.removeItem js/localStorage name))
+
+
+;; sound
+
+(defn play-audio
+  "play an audio element"
+  [id]
+  (.play (get-element id)))

@@ -3,10 +3,14 @@
   (:require
     [re-frame.core :as rf]
     [com.rpl.specter :as sp]
-    [helper.browser :refer [set-local-storage get-local-storage del-local-storage]]
+    [helper.browser :refer [set-local-storage get-local-storage del-local-storage play-audio]]
     [helper.fun :refer [distance within? filtermap]]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
+
+(def audio-id
+  "the id for the audio element"
+  "bubbles")
 
 (def min-radius
   "circles smaller than this (px) will not be created"
@@ -132,7 +136,7 @@
 (defn clear-store
   "remove anything stored in local storage for this app"
   [cofx data]
-  (del-local-storage "teatime"))
+  {:clear-local-store "teatime"})
 
 (def keyup->axn
   "map of keyups to action functions"
@@ -153,7 +157,13 @@
   (fn [[data ls-key]]
     (set-local-storage ls-key data)))
 
+(rf/reg-fx :clear-local-store
+  (fn [ls-key]
+    (del-local-storage ls-key)))
 
+(rf/reg-fx :play-sound
+  (fn [id]
+    (play-audio id)))
 
 ;; reg event
 
