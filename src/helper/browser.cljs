@@ -83,6 +83,11 @@
 ;; sound
 
 (defn play-audio
+  "play an audio file"
+  [file]
+  (.play (js/Audio. file)))
+
+(defn play-audio-el
   "play an audio element"
   [id]
   (.play (get-element id)))

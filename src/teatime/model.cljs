@@ -8,9 +8,9 @@
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
 
-(def audio-id
-  "the id for the audio element"
-  "bubbles")
+(def audio-file
+  "audio file path"
+  "audio/bubbles.mp3")
 
 (def min-radius
   "circles smaller than this (px) will not be created"
@@ -47,6 +47,11 @@
   [db shape]
   (update db :shapes #(conj % shape)))
 
+(defn count-red
+  "count the number of red shapes in the list"
+  [shapes]
+  (count (filter #(> 0 (:t %)) shapes)))
+
 (defn filter-tick-shape
   "tick one shape, return nil if it should be removed"
   [shape dt]
@@ -62,11 +67,14 @@
   (filtermap #(filter-tick-shape % dt) shapes))
 
 (defn tick-shapes
-  "progress all the shapes"
+  "tick if needed"
   [db dt]
-  (if (= :run (:mode db))
-    (update db :shapes filter-tick-shapes dt)
-    db))
+  (if (not (= :run (:mode db))) {}
+    (let [red (count-red (:shapes db))
+          db' (update db :shapes filter-tick-shapes dt)
+          red' (count-red (:shapes db'))]
+      (if (= red red') {:db db'}
+        {:db db' :play-sound audio-file}))))
 
 (defn clear-mouse
   "clear the mouse map from db"
@@ -144,12 +152,14 @@
    "Enter" store-state
    "Escape" clear-store})
 
+
 ;; reg cofx
 
 (rf/reg-cofx :get-local-store
   (fn [cofx ls-key]
     (assoc cofx :get-local-store
       (get-local-storage ls-key []))))
+
 
 ;; reg fx
 
@@ -165,6 +175,7 @@
   (fn [id]
     (play-audio id)))
 
+
 ;; reg event
 
 (rf/reg-event-fx :init
@@ -172,9 +183,9 @@
   (fn [cofx _]
     {:db (assoc (init-model) :shapes (:get-local-store cofx))}))
 
-(rf/reg-event-db :tick
-  (fn [db [_ dt]]
-    (tick-shapes db dt)))
+(rf/reg-event-fx :tick
+  (fn [cofx [_ dt]]
+    (tick-shapes (:db cofx) dt)))
 
 ;; reg mouse events
 (rf/reg-event-db :mouse-down
@@ -195,8 +206,8 @@
 
 (rf/reg-event-fx :key-up
   (fn [cofx [_ data]]
-    ; (clog data)
     ((get keyup->axn (:key data) no-axn) cofx data)))
+
 
 ;; reg sub
 
@@ -216,4 +227,4 @@
   (fn [db _] (count (:shapes db))))
 
 (rf/reg-sub :red-count
-  (fn [db _] (count (filter #(> 0 (:t %)) (:shapes db)))))
+  (fn [db _] (count-red (:shapes db))))
