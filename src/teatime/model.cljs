@@ -48,7 +48,7 @@
   [shape dt]
   (if (= "off" (:state shape)) shape
     (let [t (- (:t shape) dt)]
-     (if (> t 0)
+     (if (> t (- (:tM shape)))
        (assoc shape :t t)
        nil))))
 
@@ -204,3 +204,6 @@
 
 (rf/reg-sub :shape-count
   (fn [db _] (count (:shapes db))))
+
+(rf/reg-sub :red-count
+  (fn [db _] (count (filter #(> 0 (:t %)) (:shapes db)))))

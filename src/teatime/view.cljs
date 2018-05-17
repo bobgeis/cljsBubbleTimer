@@ -16,17 +16,18 @@
 
 (defn make-svg-outline-arc
   "make an outline arc"
-  [{:keys [x y r state t tM] :as shape}]
-  (clog "outline arc" shape)
-  (let [a (radians (/ t tM))
+  [{:keys [x y r state t tM]}]
+  (let [a (+ tau (radians (/ t tM)))
         [x2 y2] (trans-ra x y r (- (+ a half-pi)))
         flag (if (> a pi) 1 0)]
     [:path
       {:d (str
             "M " x ", " y
-            "m" 0 ", " (- r)
+            "m" 0 (- r)
             "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2)
-        :fill (if (= state "on") "url(#on)" "url(#off)")}]))
+        :fill "transparent"
+        :stroke (if (= state "on") "#FF0000" "#FFAA00")
+        :stroke-width 3}]))
 
 (defn make-svg-outline-circle
   "make an outline circle"
@@ -42,6 +43,7 @@
   (let [ratio (/ t tM)]
     (cond
       (> ratio 0) (make-svg-outline-circle shape)
+      (> ratio -1) (make-svg-outline-arc shape)
       :else nil)))
 
 (defn make-svg-fill-circle
@@ -101,11 +103,11 @@
 
 (defn get-bg-color
   "get the background color of the main svg"
-  [mode num]
+  [mode num red]
   (cond
     (= mode :pause) "#888855"
     (= num 0) "555555"
-    ;; (= red num) "#885555" ;; if all shapes are red, show the red bg
+    (= red num) "#885555" ;; if all shapes are red, show the red bg
     :else "#DFDFD0"))
 
 (defn svg-grad-def
@@ -123,9 +125,10 @@
   "draw the svgs"
   []
   (let [mode (<sub [:mode])
-        num (<sub [:shape-count])]
+        num (<sub [:shape-count])
+        red (<sub [:red-count])]
     [:svg
-      {:style {:background-color (get-bg-color mode num)}}
+      {:style {:background-color (get-bg-color mode num red)}}
       (svg-grad-def)
       (make-svg-shapes)
       (mouse-circle)]))
