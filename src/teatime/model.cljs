@@ -4,7 +4,7 @@
     [re-frame.core :as rf]
     [com.rpl.specter :as sp]
     [helper.browser :refer [set-local-storage get-local-storage del-local-storage]]
-    [helper.fun :refer [distance within?]]
+    [helper.fun :refer [distance within? filtermap]]
     [helper.log :refer [jlog clog]]
     [helper.rf :refer [spy]]))
 
@@ -48,16 +48,14 @@
   [shape dt]
   (if (= "off" (:state shape)) shape
     (let [t (- (:t shape) dt)]
-     (if (< t 0)
-       nil
-       (assoc shape :t  t)))))
+     (if (> t 0)
+       (assoc shape :t t)
+       nil))))
 
 (defn filter-tick-shapes
   "tick & filter a vector of shapes"
   [shapes dt]
-  (->> shapes
-    (map #(filter-tick-shape % dt))
-    (filter identity)))
+  (filtermap #(filter-tick-shape % dt) shapes))
 
 (defn tick-shapes
   "progress all the shapes"
@@ -193,7 +191,7 @@
 ;; reg sub
 
 (rf/reg-sub :shapes
-  (fn [db _] (reverse (:shapes db))))
+  (fn [db _] (reverse (or (:shapes db) []))))
 
 (rf/reg-sub :mouse-circle
   (fn [db _]

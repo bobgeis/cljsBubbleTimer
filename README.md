@@ -2,6 +2,14 @@
 
 FIXME: Write a one-line description of your library/project.
 
+TODO:
+* Red arcs
+* Red bg when all red arcs
+* Bubble sounds
+* Gradient center moves after half time up
+* Spiral counter
+* Doge mode
+
 ## Overview
 
 FIXME: Write a paragraph about the library/project and highlight its goals.
@@ -30,7 +38,7 @@ To create a production build run:
     lein do clean, cljsbuild once min
 
 And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+get live reloading, nor a REPL.
 
 ## License
 

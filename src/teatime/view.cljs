@@ -16,12 +16,17 @@
 
 (defn make-svg-outline-arc
   "make an outline arc"
-  [{:keys [x y r state t tM]}]
-  [:path])
-    ;; todo
-            ; "M " x ", " y
-            ; "v" (- r)
-            ; "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2])
+  [{:keys [x y r state t tM] :as shape}]
+  (clog "outline arc" shape)
+  (let [a (radians (/ t tM))
+        [x2 y2] (trans-ra x y r (- (+ a half-pi)))
+        flag (if (> a pi) 1 0)]
+    [:path
+      {:d (str
+            "M " x ", " y
+            "m" 0 ", " (- r)
+            "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2)
+        :fill (if (= state "on") "url(#on)" "url(#off)")}]))
 
 (defn make-svg-outline-circle
   "make an outline circle"
@@ -71,8 +76,9 @@
 
 (defn make-svg-shape
   [shape]
-  [:g (make-svg-fill shape)
-      (make-svg-outline shape)])
+  (if (not shape) nil
+    [:g (make-svg-fill shape)
+        (make-svg-outline shape)]))
 
 (defn make-svg-shapes
   "make the circle timers"
