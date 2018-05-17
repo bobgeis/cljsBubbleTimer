@@ -128,7 +128,12 @@
         num (<sub [:shape-count])
         red (<sub [:red-count])]
     [:svg
-      {:style {:background-color (get-bg-color mode num red)}}
+      {:style {:background-color (get-bg-color mode num red)
+                :position "fixed"
+                :top 0
+                :left 0
+                :width "100%"
+                :height "100%"}}
       (svg-grad-def)
       (make-svg-shapes)
       (mouse-circle)]))

@@ -1,47 +1,18 @@
 # teatime
 
-FIXME: Write a one-line description of your library/project.
+This is a re-make of [bubble timer](https://github.com/bobgeis/BubbleTimer) in clojurescript (for the purpose of learning cljs).
+
+It can be used as a simple timer.  A sound will play when a timer finishes.
+
+* Click and drag to make timer bubbles
+* Click a bubble to pause or unpause it
+* Shift-click a bubble to delete it
+* Press space to pause/unpause all bubbles.
+* Press return to save the current bubbles to local storage (they will be restored on reload)
+* Press escape to clear the local storage
 
 TODO:
-* Red arcs
-* Red bg when all red arcs
 * Bubble sounds
-* Gradient center moves after half time up
+* Bug: Gradient center moves after half time up
 * Spiral counter
 * Doge mode
-
-## Overview
-
-FIXME: Write a paragraph about the library/project and highlight its goals.
-
-## Setup
-
-To get an interactive development environment run:
-
-    lein figwheel
-
-and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
-
-    (js/alert "Am I connected?")
-
-and you should see an alert in the browser window.
-
-To clean all compiled files:
-
-    lein clean
-
-To create a production build run:
-
-    lein do clean, cljsbuild once min
-
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL.
-
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
