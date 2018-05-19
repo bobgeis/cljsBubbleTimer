@@ -69,12 +69,13 @@
 (defn tick-shapes
   "tick if needed"
   [db dt]
-  (if (not (= :run (:mode db))) {}
+  (if (not= :run (:mode db)) {}
     (let [red (count-red (:shapes db))
           db' (update db :shapes filter-tick-shapes dt)
           red' (count-red (:shapes db'))]
-      (if (= red red') {:db db'}
-        {:db db' :play-sound audio-file}))))
+      (if (> red' red) {:db db' :play-sound audio-file}
+        {:db db'}))))
+
 
 (defn clear-mouse
   "clear the mouse map from db"
