@@ -6,9 +6,6 @@ pom.xml
 /classes/
 /out/
 /target/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-failures
+.lein*
 .repl
 .nrepl-port
