@@ -46,12 +46,17 @@
       (> ratio -1) (make-svg-outline-arc shape)
       :else nil)))
 
+(defn get-fill-color
+  "choose the color to fill the circle or sector"
+  [state]
+  (if (= state "on") "rgba(0, 100, 200, 0.5)" "rgba(100, 0, 200, 0.5)"))
+
 (defn make-svg-fill-circle
   "make a circle from a shape map"
   [{:keys [x y r state t tM]}]
   [:circle
     {:cx x :cy y :r r
-      :fill (if (= state "on") "url(#on)" "url(#off)")}])
+      :fill (get-fill-color state)}])
 
 (defn make-svg-fill-arc
   "draw an arc with svg"
@@ -65,7 +70,7 @@
             "v" (- r)
             "A " r ", " r ", " 0 ", " flag ", " 0 ", " x2 ", " y2
             "Z")
-        :fill (if (= state "on") "url(#on)" "url(#off)")}]))
+        :fill (get-fill-color state)}]))
 
 (defn make-svg-fill
   "draw a shape with svg"
@@ -110,17 +115,6 @@
     (= red num) "#885555" ;; if all shapes are red, show the red bg
     :else "#DFDFD0"))
 
-(defn svg-grad-def
-  "get defs for the svg radial gradient"
-  []
-  [:defs
-    [:radialGradient {:id "on"}
-      [:stop {:offset "10%" :stop-color "rgba(255, 255, 255, 0.5)"}]
-      [:stop {:offset "95%" :stop-color "rgba(0, 100, 200, 0.5)"}]]
-    [:radialGradient {:id "off"}
-      [:stop {:offset "10%" :stop-color "rgba(255, 255, 255, 0.5)"}]
-      [:stop {:offset "95%" :stop-color "rgba(100, 0, 200, 0.5)"}]]])
-
 (defn svg-board
   "draw the svgs"
   []
@@ -134,7 +128,6 @@
                 :left 0
                 :width "100%"
                 :height "100%"}}
-      (svg-grad-def)
       (make-svg-shapes)
       (mouse-circle)]))
 
