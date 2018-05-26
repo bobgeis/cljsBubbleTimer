@@ -189,19 +189,19 @@
     (tick-shapes (:db cofx) dt)))
 
 ;; reg mouse events
-(rf/reg-event-db :mouse-down
+(rf/reg-event-db :pointer-down
   (fn [db [_ data]]
     (start-mouse db data)))
 
-(rf/reg-event-db :mouse-move
+(rf/reg-event-db :pointer-move
   (fn [db [_ data]]
     (move-mouse db data)))
 
-(rf/reg-event-db :mouse-leave
+(rf/reg-event-db :pointer-leave
   (fn [db _]
     (clear-mouse db)))
 
-(rf/reg-event-db :mouse-up
+(rf/reg-event-db :pointer-up
   (fn [db [_ data]]
     (stop-mouse db data)))
 

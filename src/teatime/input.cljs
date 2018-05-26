@@ -25,8 +25,8 @@
   "add the event listeners"
   []
   (let [div (get-app-element)]
-    (add-listener div "mousedown" #(disp-mouse-handler % :mouse-down))
-    (add-listener div "mousemove" #(disp-mouse-handler % :mouse-move))
-    (add-listener div "mouseleave" #(disp-mouse-handler % :mouse-leave))
-    (add-listener div "mouseup" #(disp-mouse-handler % :mouse-up))
+    (add-listener div "pointerdown" #(disp-mouse-handler % :pointer-down))
+    (add-listener div "pointermove" #(disp-mouse-handler % :pointer-move))
+    (add-listener div "pointerleave" #(disp-mouse-handler % :pointer-leave))
+    (add-listener div "pointerup" #(disp-mouse-handler % :pointer-up))
     (add-listener js/document "keyup" #(disp-key-handler % :key-up))))
